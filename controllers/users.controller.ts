@@ -22,7 +22,8 @@ export const getUser = (req: Request, res: Response) => {
 export const postUser = (req: Request, res: Response) => {
 
     const { body } = req;
-
+    console.log(req);
+    
     res.json({
         msg: 'post ususarios',
         body
@@ -31,9 +32,11 @@ export const postUser = (req: Request, res: Response) => {
 
 
 export const putUsers = (req: Request, res: Response) => {
-
+    
     const { id } = req.params;
+    console.log(id);
     const { body } = req;
+console.log(body);
 
     res.json({
         msg: 'put ususarios',

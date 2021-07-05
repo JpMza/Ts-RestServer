@@ -17,6 +17,7 @@ const getUser = (req, res) => {
 exports.getUser = getUser;
 const postUser = (req, res) => {
     const { body } = req;
+    console.log(req);
     res.json({
         msg: 'post ususarios',
         body
@@ -25,7 +26,9 @@ const postUser = (req, res) => {
 exports.postUser = postUser;
 const putUsers = (req, res) => {
     const { id } = req.params;
+    console.log(id);
     const { body } = req;
+    console.log(body);
     res.json({
         msg: 'put ususarios',
         body,
