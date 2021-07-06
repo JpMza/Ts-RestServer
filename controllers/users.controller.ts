@@ -24,10 +24,31 @@ export const getUser = async (req: Request, res: Response) => {
 }
 
 
-export const postUser = (req: Request, res: Response) => {
+export const postUser = async (req: Request, res: Response) => {
 
     const { body } = req;
-    console.log(req);
+    try {
+
+        const mailExist = await User.findOne({
+            where: {
+                email: body.email
+            }
+        })
+        if (mailExist) {
+            return res.status(400).json({
+                msg: 'Ya existe un usuario con el email: ' + body.email
+            })
+        }
+        const user = new (User as any)(body);
+        await user.save()
+
+        res.json(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        })
+    }
 
     res.json({
         msg: 'post ususarios',
@@ -36,13 +57,29 @@ export const postUser = (req: Request, res: Response) => {
 }
 
 
-export const putUsers = (req: Request, res: Response) => {
+export const putUsers = async (req: Request, res: Response) => {
 
     const { id } = req.params;
-    console.log(id);
     const { body } = req;
-    console.log(body);
+    try {
 
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(400).json({
+                msg: 'No existe el usuario con ID: ' + id
+            })
+        }
+
+        await user.update(body)
+
+        res.json(user);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        })
+    }
     res.json({
         msg: 'put ususarios',
         body,
@@ -51,10 +88,29 @@ export const putUsers = (req: Request, res: Response) => {
 }
 
 
-export const deleteUser = (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
 
     const { id } = req.params;
 
+    try {
+        const user =await User.findByPk(id);
+
+        if (!user) {
+            return res.status(400).json({
+                msg: 'No existe el usuario con ID: ' + id
+            })
+        }
+
+        //await user.destroy()
+        await user.update({active: false})
+        res.json(user);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        })
+    }
     res.json({
         msg: 'delete ususarios',
         id

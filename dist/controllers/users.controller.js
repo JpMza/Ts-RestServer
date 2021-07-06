@@ -34,33 +34,84 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
-const postUser = (req, res) => {
+const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    console.log(req);
+    try {
+        const mailExist = yield user_1.default.findOne({
+            where: {
+                email: body.email
+            }
+        });
+        if (mailExist) {
+            return res.status(400).json({
+                msg: 'Ya existe un usuario con el email: ' + body.email
+            });
+        }
+        const user = new user_1.default(body);
+        yield user.save();
+        res.json(user);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        });
+    }
     res.json({
         msg: 'post ususarios',
         body
     });
-};
+});
 exports.postUser = postUser;
-const putUsers = (req, res) => {
+const putUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    console.log(id);
     const { body } = req;
-    console.log(body);
+    try {
+        const user = yield user_1.default.findByPk(id);
+        if (!user) {
+            return res.status(400).json({
+                msg: 'No existe el usuario con ID: ' + id
+            });
+        }
+        yield user.update(body);
+        res.json(user);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        });
+    }
     res.json({
         msg: 'put ususarios',
         body,
         id
     });
-};
+});
 exports.putUsers = putUsers;
-const deleteUser = (req, res) => {
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    try {
+        const user = yield user_1.default.findByPk(id);
+        if (!user) {
+            return res.status(400).json({
+                msg: 'No existe el usuario con ID: ' + id
+            });
+        }
+        //await user.destroy()
+        yield user.update({ active: false });
+        res.json(user);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Hable con el administrador'
+        });
+    }
     res.json({
         msg: 'delete ususarios',
         id
     });
-};
+});
 exports.deleteUser = deleteUser;
 //# sourceMappingURL=users.controller.js.map
